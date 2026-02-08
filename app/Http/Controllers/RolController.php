@@ -6,14 +6,14 @@ use App\Models\Rol;
 use App\Http\Responses\ResultResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Iluminate\Validation\Rule;
-use Iluminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Throwable;
 
 class RolController extends Controller
 {
     /**
-     * Validate role data
+     * Validate role data sent by the client
      */
     function validateRol(Request $request, ?int $id = null): void {
         $rules = [

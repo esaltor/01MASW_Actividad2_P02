@@ -67,7 +67,7 @@ class ResultResponse
         $resultResponse = new self();
         $resultResponse->setData($data);
         $resultResponse->setStatusCode(self::SUCCESS_CODE);
-        $resultResponse->setMessage(TXT_SUCCESS_CODE);
+        $resultResponse->setMessage(self::TXT_SUCCESS_CODE);
         return $resultResponse->toArray();
     }
 

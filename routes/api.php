@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RolController;
 
 // Ruta de estado de la API
 Route::get('/health', function () {
