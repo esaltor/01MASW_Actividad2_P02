@@ -15,6 +15,7 @@ return new class extends Migration
             $table->date('fecha')->primary();
             $table->boolean('lectivo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

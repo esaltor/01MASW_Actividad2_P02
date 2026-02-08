@@ -198,13 +198,13 @@ class RolController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from storage (soft delete, not delete permanently).
      */
     public function destroy($id)
     {
         try {
             $rol = Rol::findOrFail($id);
-            $rol->delete();
+            $rol->delete(); // No borra físicamente porque el modelo hace uso de SoftDeletes
 
             return response()->json(
                 ResultResponse::ok($rol),

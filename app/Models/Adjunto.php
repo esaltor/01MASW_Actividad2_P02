@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\AdjuntoIncidencia;
 use App\Models\AdjuntoElemento;
 
 class Adjunto extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'ADJUNTO';
     protected $primaryKey = 'idAdjunto';
 
