@@ -18,17 +18,8 @@ class AdjuntoIncidencia extends Model
         'idIncidencia',
     ];
 
-    /*
-     * Relaciones
-     */
-
-     public function adjunto()
-     {
-         return $this->belongsTo(Adjunto::class, 'idAdjunto', 'idAdjunto');
-     }
- 
-     public function elemento()
-     {
-         return $this->belongsTo(Incidencia::class, 'idIncidencia', 'idIncidencia');
-     }
+    public function adjunto()
+    {
+        return $this->belongsTo(Adjunto::class, 'idAdjunto', 'idAdjunto');
+    }
 }

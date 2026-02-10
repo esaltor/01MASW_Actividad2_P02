@@ -86,11 +86,16 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas de Adjunto
     Route::controller(AdjuntoController::class)->prefix('adjunto')->group(function () {
         Route::get('/', 'index');
-        Route::post('/', 'store');
         Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
+    });
+
+    // Rutas de creación de adjuntos vinculados
+    Route::controller(AdjuntoController::class)->group(function () {
+        Route::post('/incidencia/{idIncidencia}/adjuntos', 'storeAdjuntoIncidencia');
+        Route::post('/elemento/{idElemento}/adjuntos', 'storeAdjuntoElemento');
     });
 
     // Rutas de Usuario

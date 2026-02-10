@@ -54,15 +54,31 @@ class TipoRecursoController extends Controller
      */
     public function index()
     {
-        //
-    }
+        try {
+            // Obtención del número de la página y del número de elementos por página
+            $pageKey = (int) request()->query('pageKey', 1);
+            $pageSize = (int) request()->query('pageSize', 10);
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+            // Límites de la paginación para evitar abusos
+            $pageKey = max(1, $pageKey);
+            $pageSize = min(max(1, $pageSize), 100);
+
+            // Obtención del listado paginado de tipos de recurso
+            $tipos = TipoRecurso::paginate($pageSize, ['*'], 'pageKey', $pageKey);
+
+            return response()->json(
+                ResultResponse::ok($tipos),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
     }
 
     /**
@@ -70,38 +86,135 @@ class TipoRecursoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validación de los campos introducidos
+        $this->validateResourceType($request);
+
+        try {
+            $newTipoRecurso = new TipoRecurso([
+                'nombre' => $request->get('nombre'),
+                'descripcion' => $request->get('descripcion'),
+            ]);
+
+            $newTipoRecurso->save();
+
+            return response()->json(
+                ResultResponse::ok($newTipoRecurso),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(TipoRecurso $tipoRecurso)
+    public function show($id)
     {
-        //
+        try {
+            $tipoRecurso = TipoRecurso::findOrFail($id);
+
+            return response()->json(
+                ResultResponse::ok($tipoRecurso),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(TipoRecurso $tipoRecurso)
+    public function edit(Request $request, $id)
     {
-        //
+        try {
+            $tipoRecurso = TipoRecurso::findOrFail($id);
+
+            $tipoRecurso->nombre = $request->get('nombre', $tipoRecurso->nombre);
+            $tipoRecurso->descripcion = $request->get('descripcion', $tipoRecurso->descripcion);
+
+            $tipoRecurso->save();
+
+            return response()->json(
+                ResultResponse::ok($tipoRecurso),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch(Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, TipoRecurso $tipoRecurso)
+    public function update(Request $request, $id)
     {
-        //
+        // Validación de los campos introducidos
+        $this->validateResourceType($request, (int) $id);
+
+        try {
+            $tipoRecurso = TipoRecurso::findOrFail($id);
+
+            $tipoRecurso->nombre = $request->get('nombre');
+            $tipoRecurso->descripcion = $request->get('descripcion');
+
+            $tipoRecurso->save();
+
+            return response()->json(
+                ResultResponse::ok($tipoRecurso),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch(Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TipoRecurso $tipoRecurso)
+    public function destroy($id)
     {
-        //
+        try {
+            $tipoRecurso = TipoRecurso::findOrFail($id);
+            $tipoRecurso->delete(); // No borra físicamente porque el modelo hace uso de SoftDeletes
+
+            return response()->json(
+                ResultResponse::ok($tipoRecurso),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch(Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
     }
 }

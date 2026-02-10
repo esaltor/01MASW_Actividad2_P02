@@ -24,16 +24,16 @@ class Adjunto extends Model
     ];
 
     /*
-     * Relaciones
+     * Relaciones con las tablas hijas
      */
 
-     public function incidencia()
+     public function adjuntoIncidencia()
      {
-         return $this->hasOne(AdjuntoIncidencia::class, 'idAdjunto', 'idAdjunto');
+        return $this->hasOne(AdjuntoIncidencia::class, 'idAdjunto', 'idAdjunto');
      }
  
-     public function elemento()
+     public function adjuntoElemento()
      {
-         return $this->hasOne(AdjuntoElemento::class, 'idAdjunto', 'idAdjunto');
+        return $this->hasOne(AdjuntoElemento::class, 'idAdjunto', 'idAdjunto');
      }
 }
