@@ -22,6 +22,12 @@ class Elemento extends Model
         'idRecurso',
     ];
 
+    // Relaciones
+    public function recurso()
+    {
+        return $this->belongsTo(Recurso::class, 'idRecurso', 'idRecurso');
+    }
+
     public function adjuntosElemento()
     {
         return $this->hasMany(AdjuntoElemento::class, 'idElemento', 'idElemento');

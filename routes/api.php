@@ -183,9 +183,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(BloqueoController::class)->prefix('bloqueo')->group(function () {
         Route::get('/', 'index');   
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
-        Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
-        Route::delete('/{id}', 'destroy');
+        Route::get('/{idRecurso}/{diaSemana}/{idSesion}', 'show');
+        Route::post('/{idRecurso}/{diaSemana}/{idSesion}', 'update');
+        Route::put('/{idRecurso}/{diaSemana}/{idSesion}', 'edit');
+        Route::delete('/{idRecurso}/{diaSemana}/{idSesion}', 'destroy');
     });
 });

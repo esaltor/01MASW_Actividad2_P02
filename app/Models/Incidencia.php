@@ -24,6 +24,22 @@ class Incidencia extends Model
         'idUsuario',
     ];
 
+    // Relaciones
+    public function tipoIncidencia()
+    {
+        return $this->belongsTo(TipoIncidencia::class, 'idTipoIncidencia', 'idTipoIncidencia');
+    }
+
+    public function elemento()
+    {
+        return $this->belongsTo(Elemento::class, 'idElemento', 'idElemento');
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'idUsuario', 'idUsuario');
+    }
+
     public function adjuntosIncidencia()
     {
         return $this->hasMany(AdjuntoIncidencia::class, 'idIncidencia', 'idIncidencia');
