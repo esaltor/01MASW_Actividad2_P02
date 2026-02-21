@@ -140,6 +140,14 @@ Si se desea reiniciar completamente la base de datos:
 ./vendor/bin/sail artisan migrate:fresh
 ```
 
+## Población inicial de roles con Seeder
+
+Para que la API funcione correctamente al registrar usuarios, es necesario que existan ciertos roles en la base de datos. Esto se hace con un seeder de Laravel.
+
+```bash
+./vendor/bin/sail artisan db:seed --class=DatabaseSeeder
+```
+
 ## 🗄️ Acceso a la base de datos
 
 ### phpMyAdmin

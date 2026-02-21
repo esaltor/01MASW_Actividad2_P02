@@ -26,7 +26,7 @@ class IncidenciaController extends Controller
             $pageSize = min(max(1, $pageSize), 100);
 
             // Obtención del listado de incidencias paginado
-            $incidencias = Incide::with(['tipoIncidencia', 'elemento', 'usuario'])
+            $incidencias = Incidencia::with(['tipoIncidencia', 'elemento', 'usuario'])
                 ->orderBy('idIncidencia')
                 ->paginate($pageSize, ['*'], 'pageKey', $pageKey);
 
@@ -60,7 +60,7 @@ class IncidenciaController extends Controller
                 'estado' => $request->input('estado'),
                 'idTipoIncidencia' => $request->input('idTipoIncidencia'),
                 'idElemento' => $request->input('idElemento'),
-                'idUsuario' => $request->input('idUsuario'),
+                'idUsuario' => $request->user()->idUsuario // Se asigna el usuario autenticado como creador de la incidencia
             ]);
 
             $newIncidencia->save();
@@ -189,15 +189,14 @@ class IncidenciaController extends Controller
         }
     }
 
-    private function validateIncidencia(Request $request, ?int $id = null): void
+    private function validateIncidencia(Request $request, bool $isUpdate = false): void
     {
         $rules = [
-            'titulo' => ['required', 'string', 'max:100'],
-            'descripcion' => ['required', 'string', 'max:255'],
-            'estado' => ['required', 'string', 'max:50'],
+            'titulo' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:100'],
+            'descripcion' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'estado' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:50'],
             'idTipoIncidencia' => ['required', 'integer', 'exists:TIPOINCIDENCIA,idTipoIncidencia'],
-            'idElemento' => ['required', 'integer', 'exists:ELEMENTO,idElemento'],
-            'idUsuario' => ['required', 'integer', 'exists:USUARIO,idUsuario'],
+            'idElemento' => ['required', 'integer', 'exists:ELEMENTO,idElemento']
         ];
 
         $messages = [
@@ -212,10 +211,7 @@ class IncidenciaController extends Controller
             'idTipoIncidencia.exists' => 'El tipo de incidencia indicado no existe.',
             'idElemento.required' => 'El elemento es obligatorio.',
             'idElemento.integer' => 'El elemento debe ser un número.',
-            'idElemento.exists' => 'El elemento indicado no existe.',
-            'idUsuario.required' => 'El usuario es obligatorio.',
-            'idUsuario.integer' => 'El usuario debe ser un número.',
-            'idUsuario.exists' => 'El usuario indicado no existe.',
+            'idElemento.exists' => 'El elemento indicado no existe.'
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
