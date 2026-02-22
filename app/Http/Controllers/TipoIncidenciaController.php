@@ -30,11 +30,22 @@ class TipoIncidenciaController
                 ResultResponse::ok($tipos),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -60,11 +71,22 @@ class TipoIncidenciaController
                 ResultResponse::ok($tipo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -83,13 +105,24 @@ class TipoIncidenciaController
                 ResultResponse::ok($tipo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
-                    ResultResponse::TXT_NOT_FOUND_CODE
+                    ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -113,13 +146,24 @@ class TipoIncidenciaController
                 ResultResponse::ok($tipo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
-                    ResultResponse::TXT_NOT_FOUND_CODE
+                    ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -143,12 +187,25 @@ class TipoIncidenciaController
                 ResultResponse::ok($tipo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
-            return response()->json([
-        'error' => $e->getMessage(),
-        'line' => $e->getLine(),
-        'file' => $e->getFile(),
-    ], 500);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
         }
     }
 
@@ -165,13 +222,24 @@ class TipoIncidenciaController
                 ResultResponse::ok($tipo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
-                    ResultResponse::TXT_NOT_FOUND_CODE
+                    ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }

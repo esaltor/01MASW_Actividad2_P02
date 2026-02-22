@@ -34,11 +34,22 @@ class BloqueoController
                 ResultResponse::ok($bloqueos),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) { 
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -67,11 +78,22 @@ class BloqueoController
                 ResultResponse::ok($newBloqueo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -93,13 +115,24 @@ class BloqueoController
                 ResultResponse::ok($bloqueo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -115,6 +148,8 @@ class BloqueoController
                 ->where('idSesion', $idSesion)
                 ->firstOrFail();
 
+            $this->validateBloqueo($request, true);
+
             $bloqueo->motivoBloqueo = $request->get('motivoBloqueo', $bloqueo->motivoBloqueo);
 
             $bloqueo->save();
@@ -123,11 +158,22 @@ class BloqueoController
                 ResultResponse::ok($bloqueo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -145,6 +191,8 @@ class BloqueoController
                 ->where('idSesion', $idSesion)
                 ->firstOrFail();
 
+            $this->validateBloqueo($request);
+
             $bloqueo->motivoBloqueo = $request->get('motivoBloqueo', $bloqueo->motivoBloqueo);
 
             $bloqueo->save();
@@ -153,11 +201,22 @@ class BloqueoController
                 ResultResponse::ok($bloqueo),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -170,17 +229,27 @@ class BloqueoController
     public function destroy($idRecurso, $diaSemana, $idSesion)
     {
         try {
-            $bloqueo = Bloqueo::where('idRecurso', $idRecurso)
+            $deleted = Bloqueo::where('idRecurso', $idRecurso)
             ->where('diaSemana', $diaSemana)
             ->where('idSesion', $idSesion)
-            ->firstOrFail();
-            $bloqueo->delete(); // No borra físicamente porque el modelo hace uso de SoftDeletes
+            ->delete();
+
+            if ($deleted === 0) {
+                return response()->json(
+                    ResultResponse::fail(
+                        ResultResponse::NOT_FOUND_CODE,
+                        ResultResponse::TXT_NOT_FOUND_CODE,
+                    ),
+                    ResultResponse::NOT_FOUND_CODE
+                );
+            }
 
             return response()->json(
-                ResultResponse::ok($bloqueo),
+                ResultResponse::ok(null),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
@@ -188,16 +257,26 @@ class BloqueoController
                 ),
                 ResultResponse::NOT_FOUND_CODE
             );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
         }
     }
 
-    private function validateBloqueo(Request $request): void
+    private function validateBloqueo(Request $request, bool $isUpdate = false): void
     {
         $rules = [
-            'idRecurso' => ['required', 'integer', 'exists:RECURSO,idRecurso'],
-            'diaSemana' => ['required', 'integer', 'between:1,7'],
-            'idSesion' => ['required', 'integer', 'exists:SESION,idSesion'],
-            'motivoBloqueo' => ['nullable', 'string'],
+            'idRecurso' => [$isUpdate ? 'sometimes' : 'required', 'integer', 'exists:RECURSO,idRecurso'],
+            'diaSemana' => [$isUpdate ? 'sometimes' : 'required', 'integer', 'between:1,7'],
+            'idSesion' => [$isUpdate ? 'sometimes' : 'required', 'integer', 'exists:SESION,idSesion'],
+            'motivoBloqueo' => [$isUpdate ? 'sometimes' : 'nullable', 'string'],
         ];
 
         $messages = [

@@ -34,11 +34,22 @@ class IncidenciaController extends Controller
                 ResultResponse::ok($incidencias),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) { 
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -69,11 +80,22 @@ class IncidenciaController extends Controller
                 ResultResponse::ok($newIncidencia),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -92,13 +114,24 @@ class IncidenciaController extends Controller
                 ResultResponse::ok($incidencia),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -111,11 +144,13 @@ class IncidenciaController extends Controller
         try {
             $incidencia = Incidencia::findOrFail($id);
 
+            $this->validateIncidencia($request, true);
+
             $incidencia->titulo = $request->get('titulo', $incidencia->titulo);
             $incidencia->descripcion = $request->get('descripcion', $incidencia->descripcion);
             $incidencia->estado = $request->get('estado', $incidencia->estado);
-            $incidencia->caracteristicas = $request->get('caracteristicas', $incidencia->caracteristicas);
             $incidencia->idTipoIncidencia = $request->get('idTipoIncidencia', $incidencia->idTipoIncidencia);
+            $incidencia->idElemento = $request->get('idElemento', $incidencia->idElemento);
 
             $incidencia->save();
 
@@ -123,13 +158,24 @@ class IncidenciaController extends Controller
                 ResultResponse::ok($incidencia),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -142,25 +188,38 @@ class IncidenciaController extends Controller
         try {
             $incidencia = Incidencia::findOrFail($id);
 
+            $this->validateIncidencia($request);
+
             $incidencia->titulo = $request->get('titulo', $incidencia->titulo);
             $incidencia->descripcion = $request->get('descripcion', $incidencia->descripcion);
             $incidencia->estado = $request->get('estado', $incidencia->estado);
-            $incidencia->caracteristicas = $request->get('caracteristicas', $incidencia->caracteristicas);
             $incidencia->idTipoIncidencia = $request->get('idTipoIncidencia', $incidencia->idTipoIncidencia);
-
+            $incidencia->idElemento = $request->get('idElemento', $incidencia->idElemento);
+            
             $incidencia->save();
 
             return response()->json(
                 ResultResponse::ok($incidencia),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -195,8 +254,8 @@ class IncidenciaController extends Controller
             'titulo' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:100'],
             'descripcion' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
             'estado' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:50'],
-            'idTipoIncidencia' => ['required', 'integer', 'exists:TIPOINCIDENCIA,idTipoIncidencia'],
-            'idElemento' => ['required', 'integer', 'exists:ELEMENTO,idElemento']
+            'idTipoIncidencia' => [$isUpdate ? 'sometimes' : 'required', 'integer', 'exists:TIPOINCIDENCIA,idTipoIncidencia'],
+            'idElemento' => [$isUpdate ? 'sometimes' : 'required', 'integer', 'exists:ELEMENTO,idElemento']
         ];
 
         $messages = [
