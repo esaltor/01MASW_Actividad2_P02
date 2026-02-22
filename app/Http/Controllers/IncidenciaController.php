@@ -17,6 +17,23 @@ class IncidenciaController extends Controller
     public function index()
     {
         try {
+            $query = Incidencia::with(['tipoIncidencia', 'elemento', 'usuario'])->orderBy('idIncidencia');
+
+            // Filtro por estado
+            if ($estado = request()->query('estado')) {
+                $query->where('estado', $estado);
+            }
+
+            // Filtro por fecha desde
+            if ($fechaDesde = request()->query('fecha_desde')) {
+                $query->whereDate('created_at', '>=', $fechaDesde);
+            }
+
+            // Filtro por fecha hasta
+            if ($fechaHasta = request()->query('fecha_hasta')) {
+                $query->whereDate('created_at', '<=', $fechaHasta);
+            }
+
             // Obtención del número de la página y del número de elementos por página
             $pageKey = (int) request()->query('pageKey', 1);
             $pageSize = (int) request()->query('pageSize', 10);
@@ -26,9 +43,7 @@ class IncidenciaController extends Controller
             $pageSize = min(max(1, $pageSize), 100);
 
             // Obtención del listado de incidencias paginado
-            $incidencias = Incidencia::with(['tipoIncidencia', 'elemento', 'usuario'])
-                ->orderBy('idIncidencia')
-                ->paginate($pageSize, ['*'], 'pageKey', $pageKey);
+            $incidencias = $query->paginate($pageSize, ['*'], 'pageKey', $pageKey);
 
             return response()->json(
                 ResultResponse::ok($incidencias),

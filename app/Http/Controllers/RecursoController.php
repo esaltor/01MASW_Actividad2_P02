@@ -58,6 +58,13 @@ class RecursoController extends Controller
     public function index()
     {
         try {
+            $query = Recurso::query()->orderBy('idRecurso');
+
+            // Filtro por estado
+            if ($estado = request()->query('estado')) {
+                $query->where('estado', $estado);
+            }
+
             // Obtención del número de la página y del número de elementos por página
             $pageKey = (int) request()->query('pageKey', 1);
             $pageSize = (int) request()->query('pageSize', 10);
@@ -67,7 +74,7 @@ class RecursoController extends Controller
             $pageSize = min(max(1, $pageSize), 100);
 
             // Obtención del listado de roles paginado
-            $recursos = Recurso::paginate($pageSize, ['*'], 'pageKey', $pageKey);
+            $recursos = $query->paginate($pageSize, ['*'], 'pageKey', $pageKey);
 
             return response()->json(
                 ResultResponse::ok($recursos),
