@@ -140,6 +140,12 @@ Si se desea reiniciar completamente la base de datos:
 ./vendor/bin/sail artisan migrate:fresh
 ```
 
+Para eliminar todas las tablas, vistas y tipos de la base de datos actual definida en .env, dejándola vacía.
+
+```bash
+./vendor/bin/sail artisan db:wipe
+```
+
 ## Población inicial de roles con Seeder
 
 Para que la API funcione correctamente al registrar usuarios, es necesario que existan ciertos roles en la base de datos. Esto se hace con un seeder de Laravel.

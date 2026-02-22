@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
 
         Usuario::create([
             'nombre' => 'Admin',
+            'apellidos' => 'Demo',
+            'telefono' => '123456789',
             'email' => 'admin@demo.com',
             'password' => bcrypt('admin123'),
             'idRol' => 2, // Asignar el rol de Administrador
@@ -40,6 +42,8 @@ class DatabaseSeeder extends Seeder
 
         Usuario::create([
             'nombre' => 'Usuario',
+            'apellidos' => 'Demo',
+            'telefono' => '234567891',
             'email' => 'usuario@demo.com',
             'password' => bcrypt('usuario123'),
             'idRol' => 1, // Asignar el rol de Usuario
@@ -47,6 +51,8 @@ class DatabaseSeeder extends Seeder
 
         Usuario::create([
             'nombre' => 'Mia',
+            'apellidos' => 'Demo',
+            'telefono' => '345678912',
             'email' => 'mia@demo.com',
             'password' => bcrypt('mia123'),
             'idRol' => 3, // Asignar el rol de Mia
