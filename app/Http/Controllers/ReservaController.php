@@ -17,6 +17,13 @@ class ReservaController
     public function index()
     {
         try {
+            $query = Reserva::with(['recurso', 'sesion'])->orderBy('idReserva');
+
+            // Filtro recurso
+            if ($recurso = request()->query('idRecurso')) {
+                $query->where('idRecurso', $recurso);
+            }
+
             // Obtención del número de la página y del número de elementos por página
             $pageKey = (int) request()->query('pageKey', 1);
             $pageSize = (int) request()->query('pageSize', 10);
@@ -26,17 +33,28 @@ class ReservaController
             $pageSize = min(max(1, $pageSize), 100);
 
             // Obtención del listado de roles paginado
-            $reservas = Reserva::paginate($pageSize, ['*'], 'pageKey', $pageKey);
+            $reservas = $query->paginate($pageSize, ['*'], 'pageKey', $pageKey);
 
             return response()->json(
                 ResultResponse::ok($reservas),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) { 
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -56,7 +74,7 @@ class ReservaController
             $newReserva = new Reserva([
                 'estado' => $request->input('estado'),
                 'fecha' => $request->input('fecha'),
-                'idUsuario' => $request->input('idUsuario'),
+                'idUsuario' => $request->user()->idUsuario, // Se asigna el usuario autenticado como creador de la incidencia
                 'idRecurso' => $request->input('idRecurso'),
                 'idSesion' => $request->input('idSesion'),
             ]);
@@ -67,11 +85,22 @@ class ReservaController
                 ResultResponse::ok($newReserva),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) { 
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
                 ),
                 ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
@@ -90,13 +119,24 @@ class ReservaController
                 ResultResponse::ok($reserva),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -112,7 +152,6 @@ class ReservaController
 
             $reserva->estado = $request->get('estado', $reserva->estado);
             $reserva->fecha = $request->get('fecha', $reserva->fecha);
-            $reserva->idUsuario = $request->get('idUsuario', $reserva->idUsuario);
             $reserva->idRecurso = $request->get('idRecurso', $reserva->idRecurso);
             $reserva->idSesion = $request->get('idSesion', $reserva->idSesion);
 
@@ -122,13 +161,24 @@ class ReservaController
                 ResultResponse::ok($reserva),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -147,7 +197,6 @@ class ReservaController
 
             $reserva->estado = $request->get('estado', $reserva->estado);
             $reserva->fecha = $request->get('fecha', $reserva->fecha);
-            $reserva->idUsuario = $request->get('idUsuario', $reserva->idUsuario);
             $reserva->idRecurso = $request->get('idRecurso', $reserva->idRecurso);
             $reserva->idSesion = $request->get('idSesion', $reserva->idSesion);
 
@@ -157,14 +206,24 @@ class ReservaController
                 ResultResponse::ok($reserva),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
-                    $e->getMessage()
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -182,13 +241,24 @@ class ReservaController
                 ResultResponse::ok($reserva),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch(Throwable $e) {
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
             return response()->json(
                 ResultResponse::fail(
                     ResultResponse::NOT_FOUND_CODE,
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
             );
         }
     }
@@ -197,8 +267,7 @@ class ReservaController
     {
         $rules = [
             'estado' => ['required', 'string', 'max:50'],
-            'fecha' => ['required', 'date'],
-            'idUsuario' => ['required', 'integer', 'exists:USUARIO,idUsuario'],
+            'fecha' => ['required', 'date', 'exists:CALENDARIO,fecha'],
             'idRecurso' => ['required', 'integer', 'exists:RECURSO,idRecurso'],
             'idSesion' => ['nullable', 'integer', 'exists:SESION,idSesion'],
         ];
@@ -210,10 +279,6 @@ class ReservaController
 
             'fecha.required' => 'La fecha es obligatoria.',
             'fecha.date' => 'La fecha debe tener un formato válido.',
-
-            'idUsuario.required' => 'El usuario es obligatorio.',
-            'idUsuario.integer' => 'El usuario debe ser un número.',
-            'idUsuario.exists' => 'El usuario indicado no existe.',
 
             'idRecurso.required' => 'El recurso es obligatorio.',
             'idRecurso.integer' => 'El recurso debe ser un número.',
