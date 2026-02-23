@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
+use App\Http\Controllers\SesionController;
 
 // Ruta de estado de la API
 Route::get('/health', function () {
