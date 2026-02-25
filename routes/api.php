@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RolController;
 use App\Http\Controllers\SesionController;
+use App\Http\Controllers\CalendarioController;
+use App\Http\Controllers\UsuarioController;
 
 // Ruta de estado de la API
 Route::get('/health', function () {
@@ -45,11 +47,8 @@ Route::controller(SesionController::class)->prefix('sesion')->group(function () 
 // Rutas de Calendario
 Route::controller(CalendarioController::class)->prefix('calendario')->group(function () {
     Route::get('/', 'index');
-    Route::post('/', 'store');
-    Route::get('/{id}', 'show');
-    Route::post('/{id}', 'update');
-    Route::put('/{id}', 'edit');
-    Route::delete('/{id}', 'destroy');
+    Route::patch('/{fecha}', 'toggleLectivo')
+        ->where('fecha', '\d{4}-\d{2}-\d{2}');
 });
 
 // Rutas de Tipo de Incidencia
