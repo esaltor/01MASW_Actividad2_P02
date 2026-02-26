@@ -80,27 +80,27 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Recurso::insert([
-            ['nombre'=>'Aula 101','descripcion'=>'Aula de teoría con proyector','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'35 plazas, proyector, pizarra blanca','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 102','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 103','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 104','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 105','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 106','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 107','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 108','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula 109','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'DISPONIBLE','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
-            ['nombre'=>'Aula Info 1','descripcion'=>'Aula informática básica','ubicacion'=>'Edificio B - Planta 2','estado'=>'DISPONIBLE','caracteristicas'=>'25 PCs, proyector','idTipoRecurso'=>2],
-            ['nombre'=>'Aula Info 2','descripcion'=>'Aula informática avanzada','ubicacion'=>'Edificio B - Planta 3','estado'=>'MANTENIMIENTO','caracteristicas'=>'30 PCs, doble proyector','idTipoRecurso'=>2],
-            ['nombre'=>'Aula Info 3','descripcion'=>'Aula informática básica','ubicacion'=>'Edificio B - Planta 2','estado'=>'DISPONIBLE','caracteristicas'=>'25 PCs, proyector','idTipoRecurso'=>2],
-            ['nombre'=>'Aula Info 4','descripcion'=>'Aula informática básica','ubicacion'=>'Edificio B - Planta 3','estado'=>'MANTENIMIENTO','caracteristicas'=>'25 PCs, proyector','idTipoRecurso'=>2],
-            ['nombre'=>'Aula Info 5','descripcion'=>'Aula informática avanzada','ubicacion'=>'Edificio B - Planta 2','estado'=>'DISPONIBLE','caracteristicas'=>'30 PCs, doble proyector','idTipoRecurso'=>2],
-            ['nombre'=>'Lab Química','descripcion'=>'Laboratorio de química','ubicacion'=>'Edificio C - Planta 0','estado'=>'DISPONIBLE','caracteristicas'=>'Campanas, material de química','idTipoRecurso'=>3],
-            ['nombre'=>'Carro Portátiles 1','descripcion'=>'Carro con 20 portátiles','ubicacion'=>'Almacén TIC','estado'=>'DISPONIBLE','caracteristicas'=>'20 portátiles, WiFi','idTipoRecurso'=>4],
-            ['nombre'=>'Carro Portátiles 2','descripcion'=>'Carro con 30 portátiles','ubicacion'=>'Almacén TIC','estado'=>'DISPONIBLE','caracteristicas'=>'30 portátiles, WiFi','idTipoRecurso'=>4],
-            ['nombre'=>'Carro Portátiles 3','descripcion'=>'Carro con 30 portátiles','ubicacion'=>'Almacén TIC','estado'=>'DISPONIBLE','caracteristicas'=>'30 portátiles, WiFi','idTipoRecurso'=>4],
-            ['nombre'=>'Carro Portátiles 4','descripcion'=>'Carro con 20 portátiles','ubicacion'=>'Almacén TIC','estado'=>'DISPONIBLE','caracteristicas'=>'20 portátiles, WiFi','idTipoRecurso'=>4],
-            ['nombre'=>'Sala Reuniones 1','descripcion'=>'Sala pequeña para tutorías','ubicacion'=>'Edificio A - Planta 2','estado'=>'DISPONIBLE','caracteristicas'=>'8 plazas, pantalla TV','idTipoRecurso'=>5],
-            ['nombre'=>'Sala Reuniones 2','descripcion'=>'Sala grande para reuniones','ubicacion'=>'Edificio A - Planta 2','estado'=>'DISPONIBLE','caracteristicas'=>'10 plazas, pantalla TV','idTipoRecurso'=>5],
+            ['nombre'=>'Aula 101','descripcion'=>'Aula de teoría con proyector','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'35 plazas, proyector, pizarra blanca','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 102','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 103','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 104','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 105','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 106','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 107','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 108','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula 109','descripcion'=>'Aula de teoría','ubicacion'=>'Edificio A - Planta 1','estado'=>'Disponible','caracteristicas'=>'30 plazas, pizarra verde','idTipoRecurso'=>1],
+            ['nombre'=>'Aula Info 1','descripcion'=>'Aula informática básica','ubicacion'=>'Edificio B - Planta 2','estado'=>'Disponible','caracteristicas'=>'25 PCs, proyector','idTipoRecurso'=>2],
+            ['nombre'=>'Aula Info 2','descripcion'=>'Aula informática avanzada','ubicacion'=>'Edificio B - Planta 3','estado'=>'Mantenimiento','caracteristicas'=>'30 PCs, doble proyector','idTipoRecurso'=>2],
+            ['nombre'=>'Aula Info 3','descripcion'=>'Aula informática básica','ubicacion'=>'Edificio B - Planta 2','estado'=>'Disponible','caracteristicas'=>'25 PCs, proyector','idTipoRecurso'=>2],
+            ['nombre'=>'Aula Info 4','descripcion'=>'Aula informática básica','ubicacion'=>'Edificio B - Planta 3','estado'=>'Mantenimiento','caracteristicas'=>'25 PCs, proyector','idTipoRecurso'=>2],
+            ['nombre'=>'Aula Info 5','descripcion'=>'Aula informática avanzada','ubicacion'=>'Edificio B - Planta 2','estado'=>'Disponible','caracteristicas'=>'30 PCs, doble proyector','idTipoRecurso'=>2],
+            ['nombre'=>'Lab Química','descripcion'=>'Laboratorio de química','ubicacion'=>'Edificio C - Planta 0','estado'=>'Disponible','caracteristicas'=>'Campanas, material de química','idTipoRecurso'=>3],
+            ['nombre'=>'Carro Portátiles 1','descripcion'=>'Carro con 20 portátiles','ubicacion'=>'Almacén TIC','estado'=>'Disponible','caracteristicas'=>'20 portátiles, WiFi','idTipoRecurso'=>4],
+            ['nombre'=>'Carro Portátiles 2','descripcion'=>'Carro con 30 portátiles','ubicacion'=>'Almacén TIC','estado'=>'Disponible','caracteristicas'=>'30 portátiles, WiFi','idTipoRecurso'=>4],
+            ['nombre'=>'Carro Portátiles 3','descripcion'=>'Carro con 30 portátiles','ubicacion'=>'Almacén TIC','estado'=>'Disponible','caracteristicas'=>'30 portátiles, WiFi','idTipoRecurso'=>4],
+            ['nombre'=>'Carro Portátiles 4','descripcion'=>'Carro con 20 portátiles','ubicacion'=>'Almacén TIC','estado'=>'Disponible','caracteristicas'=>'20 portátiles, WiFi','idTipoRecurso'=>4],
+            ['nombre'=>'Sala Reuniones 1','descripcion'=>'Sala pequeña para tutorías','ubicacion'=>'Edificio A - Planta 2','estado'=>'Disponible','caracteristicas'=>'8 plazas, pantalla TV','idTipoRecurso'=>5],
+            ['nombre'=>'Sala Reuniones 2','descripcion'=>'Sala grande para reuniones','ubicacion'=>'Edificio A - Planta 2','estado'=>'Disponible','caracteristicas'=>'10 plazas, pantalla TV','idTipoRecurso'=>5],
         ]);
 
         Elemento::insert([
@@ -171,10 +171,8 @@ class DatabaseSeeder extends Seeder
             ['idAdjunto'=>2,'idIncidencia'=>2]
         ]);
 
-        Calendario::insert([
-            ['fecha'=>'2025-11-17'],
-            ['fecha'=>'2025-11-18'],
-            ['fecha'=>'2025-11-19'],
+        $this->call([
+            CalendarioSeeder::class
         ]);
 
         Sesion::insert([
@@ -205,11 +203,7 @@ class DatabaseSeeder extends Seeder
 
         Notificacion::insert([
             ['asunto'=>'Reserva confirmada - Aula 101','cuerpo'=>'Tu reserva del recurso "Aula 101" ha sido confirmada para el día 2025-03-10 en la sesión 2.','canal'=>'EMAIL','enviadaEn'=>'2025-03-01 09:15:00','idUsuario'=>$mia->idUsuario],
-            ['asunto'=>'Reserva rechazada - Aula Info 2','cuerpo'=>'La reserva del recurso "Aula Info 2" ha sido rechazada por mantenimiento.','canal'=>'EMAIL','enviadaEn'=>'2025-03-02 10:30:00','idUsuario'=>$admin->idUsuario],
-        ]);
-
-        $this->call([
-            CalendarioSeeder::class
+            ['asunto'=>'Reserva rechazada - Aula Info 2','cuerpo'=>'La reserva del recurso "Aula Info 2" ha sido rechazada por Mantenimiento.','canal'=>'EMAIL','enviadaEn'=>'2025-03-02 10:30:00','idUsuario'=>$admin->idUsuario],
         ]);
     }
 }
