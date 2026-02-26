@@ -24,10 +24,6 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    $this->call([
-            CalendarioSeeder::class
-     ]);
-
     /**
      * Seed the application's database.
      */
@@ -210,6 +206,10 @@ class DatabaseSeeder extends Seeder
         Notificacion::insert([
             ['asunto'=>'Reserva confirmada - Aula 101','cuerpo'=>'Tu reserva del recurso "Aula 101" ha sido confirmada para el día 2025-03-10 en la sesión 2.','canal'=>'EMAIL','enviadaEn'=>'2025-03-01 09:15:00','idUsuario'=>$mia->idUsuario],
             ['asunto'=>'Reserva rechazada - Aula Info 2','cuerpo'=>'La reserva del recurso "Aula Info 2" ha sido rechazada por mantenimiento.','canal'=>'EMAIL','enviadaEn'=>'2025-03-02 10:30:00','idUsuario'=>$admin->idUsuario],
+        ]);
+
+        $this->call([
+            CalendarioSeeder::class
         ]);
     }
 }
