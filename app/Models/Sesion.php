@@ -20,5 +20,11 @@ class Sesion extends Model
     protected $fillable = [
         'horaInicio',
         'horaFin'
+
+    public $timestamps = true;
+
+    protected $casts = [
+        'horaInicio' => 'datetime:H:i:s',
+        'horaFin' => 'datetime:H:i:s',
     ];
 }

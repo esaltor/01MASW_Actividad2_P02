@@ -18,17 +18,8 @@ class AdjuntoElemento extends Model
         'idElemento',
     ];
 
-    /*
-     * Relaciones
-     */
-
-     public function adjunto()
-     {
-         return $this->belongsTo(Adjunto::class, 'idAdjunto', 'idAdjunto');
-     }
- 
-     public function elemento()
-     {
-         return $this->belongsTo(Elemento::class, 'idElemento', 'idElemento');
-     }
+    public function adjunto()
+    {
+        return $this->belongsTo(Adjunto::class, 'idAdjunto', 'idAdjunto');
+    }
 }

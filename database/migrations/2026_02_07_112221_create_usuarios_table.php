@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('apellidos', 100);
             $table->string('telefono', 15)->nullable();
             $table->string('email', 100)->unique();
+            $table->string('password', 255);
 
             $table->timestamp('fechaAlta')->useCurrent();
             $table->timestamp('fechaBaja')->nullable();

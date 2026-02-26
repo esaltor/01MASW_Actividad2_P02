@@ -4,62 +4,303 @@ namespace App\Http\Controllers;
 
 use App\Models\Incidencia;
 use Illuminate\Http\Request;
+use App\Http\Responses\ResultResponse;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Throwable;
 
-class IncidenciaController
+class IncidenciaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the incidence.
      */
     public function index()
     {
-        //
+        try {
+            $query = Incidencia::with(['tipoIncidencia', 'elemento', 'usuario'])->orderBy('idIncidencia');
+
+            // Filtro por estado
+            if ($estado = request()->query('estado')) {
+                $query->where('estado', $estado);
+            }
+
+            // Filtro por fecha desde
+            if ($fechaDesde = request()->query('fecha_desde')) {
+                $query->whereDate('created_at', '>=', $fechaDesde);
+            }
+
+            // Filtro por fecha hasta
+            if ($fechaHasta = request()->query('fecha_hasta')) {
+                $query->whereDate('created_at', '<=', $fechaHasta);
+            }
+
+            // Obtención del número de la página y del número de elementos por página
+            $pageKey = (int) request()->query('pageKey', 1);
+            $pageSize = (int) request()->query('pageSize', 10);
+
+            // Límites de la paginación para evitar abusos
+            $pageKey = max(1, $pageKey);
+            $pageSize = min(max(1, $pageSize), 100);
+
+            // Obtención del listado de incidencias paginado
+            $incidencias = $query->paginate($pageSize, ['*'], 'pageKey', $pageKey);
+
+            return response()->json(
+                ResultResponse::ok($incidencias),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Store a newly created incidence in storage.
      */
     public function store(Request $request)
     {
-        //
+        // Validación de los campos introducidos
+        $this->validateIncidencia($request);
+
+        try {
+            $newIncidencia = new Incidencia([
+                'titulo' => $request->input('titulo'),
+                'descripcion' => $request->input('descripcion'),
+                'estado' => $request->input('estado'),
+                'idTipoIncidencia' => $request->input('idTipoIncidencia'),
+                'idElemento' => $request->input('idElemento'),
+                'idUsuario' => $request->user()->idUsuario // Se asigna el usuario autenticado como creador de la incidencia
+            ]);
+
+            $newIncidencia->save();
+
+            return response()->json(
+                ResultResponse::ok($newIncidencia),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified incidence.
      */
-    public function show(Incidencia $incidencia)
+    public function show($id)
     {
-        //
+        try {
+            $incidencia = Incidencia::findOrFail($id);
+
+            return response()->json(
+                ResultResponse::ok($incidencia),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the specified incidence.
      */
-    public function edit(Incidencia $incidencia)
+    public function edit(Request $request, $id)
     {
-        //
+        try {
+            $incidencia = Incidencia::findOrFail($id);
+
+            $this->validateIncidencia($request, true);
+
+            $incidencia->titulo = $request->get('titulo', $incidencia->titulo);
+            $incidencia->descripcion = $request->get('descripcion', $incidencia->descripcion);
+            $incidencia->estado = $request->get('estado', $incidencia->estado);
+            $incidencia->idTipoIncidencia = $request->get('idTipoIncidencia', $incidencia->idTipoIncidencia);
+            $incidencia->idElemento = $request->get('idElemento', $incidencia->idElemento);
+
+            $incidencia->save();
+
+            return response()->json(
+                ResultResponse::ok($incidencia),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Incidencia $incidencia)
+    public function update(Request $request, $id)
     {
-        //
+        try {
+            $incidencia = Incidencia::findOrFail($id);
+
+            $this->validateIncidencia($request);
+
+            $incidencia->titulo = $request->get('titulo', $incidencia->titulo);
+            $incidencia->descripcion = $request->get('descripcion', $incidencia->descripcion);
+            $incidencia->estado = $request->get('estado', $incidencia->estado);
+            $incidencia->idTipoIncidencia = $request->get('idTipoIncidencia', $incidencia->idTipoIncidencia);
+            $incidencia->idElemento = $request->get('idElemento', $incidencia->idElemento);
+            
+            $incidencia->save();
+
+            return response()->json(
+                ResultResponse::ok($incidencia),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified incidence from storage.
      */
-    public function destroy(Incidencia $incidencia)
+    public function destroy($id)
     {
-        //
+        try {
+            $incidencia = Incidencia::findOrFail($id);
+            $incidencia->delete(); // No borra físicamente porque el modelo hace uso de SoftDeletes
+
+            return response()->json(
+                ResultResponse::ok($incidencia),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch(Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
+    }
+
+    private function validateIncidencia(Request $request, bool $isUpdate = false): void
+    {
+        $rules = [
+            'titulo' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:100'],
+            'descripcion' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:255'],
+            'estado' => [$isUpdate ? 'sometimes' : 'required', 'string', 'max:50'],
+            'idTipoIncidencia' => [$isUpdate ? 'sometimes' : 'required', 'integer', 'exists:TIPOINCIDENCIA,idTipoIncidencia'],
+            'idElemento' => [$isUpdate ? 'sometimes' : 'required', 'integer', 'exists:ELEMENTO,idElemento']
+        ];
+
+        $messages = [
+            'titulo.required' => 'El título es obligatorio.',
+            'titulo.max' => 'El título no puede superar 100 caracteres.',
+            'descripcion.required' => 'La descripción es obligatoria.',
+            'descripcion.max' => 'La descripción no puede superar 255 caracteres.',
+            'estado.required' => 'El estado es obligatorio.',
+            'estado.max' => 'El estado no puede superar 50 caracteres.',
+            'idTipoIncidencia.required' => 'El tipo de incidencia es obligatorio.',
+            'idTipoIncidencia.integer' => 'El tipo de incidencia debe ser un número.',
+            'idTipoIncidencia.exists' => 'El tipo de incidencia indicado no existe.',
+            'idElemento.required' => 'El elemento es obligatorio.',
+            'idElemento.integer' => 'El elemento debe ser un número.',
+            'idElemento.exists' => 'El elemento indicado no existe.'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            throw new \Illuminate\Http\Exceptions\HttpResponseException(
+                response()->json(
+                    ResultResponse::fail(
+                        ResultResponse::ERROR_CODE,
+                        ResultResponse::TXT_ERROR_CODE,
+                        $validator->errors()->toArray()
+                    ),
+                    ResultResponse::ERROR_CODE
+                )
+            );
+        }
     }
 }

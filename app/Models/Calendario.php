@@ -10,14 +10,23 @@ class Calendario extends Model
     use SoftDeletes;
 
     protected $table = 'CALENDARIO';
+  
     protected $primaryKey = 'fecha';
-    public $incrementing = false;
+
     protected $keyType = 'string';
 
-    protected $fillable = ['fecha', 'lectivo'];
+    // No es auto incremental
+    public $incrementing = false;
+
+    public $timestamps = true;
+
+    protected $fillable = [
+        'fecha',
+        'lectivo',
+    ];
 
     protected $casts = [
-        'fecha' => 'date',
+        'fecha' => 'date:Y-m-d',
         'lectivo' => 'boolean',
     ];
 }
