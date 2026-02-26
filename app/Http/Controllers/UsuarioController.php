@@ -183,7 +183,7 @@ class UsuarioController extends Controller
         $this->validateLogin($request);
 
         try {
-            $usuario = Usuario::where('email', $request->get('email'))->first();
+            $usuario = Usuario::with('rol')->where('email', $request->get('email'))->first();
 
             if (!$usuario || !Hash::check($request->get('password'), $usuario->password)) {
                 return response()->json(
