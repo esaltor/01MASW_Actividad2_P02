@@ -10,14 +10,13 @@ class Calendario extends Model
     use SoftDeletes;
 
     protected $table = 'CALENDARIO';
-
-    // La PK es fecha
+  
     protected $primaryKey = 'fecha';
+
+    protected $keyType = 'string';
 
     // No es auto incremental
     public $incrementing = false;
-
-    protected $keyType = 'string';
 
     public $timestamps = true;
 

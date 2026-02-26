@@ -24,6 +24,10 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
+    $this->call([
+            CalendarioSeeder::class
+     ]);
+
     /**
      * Seed the application's database.
      */

@@ -10,14 +10,18 @@ class Sesion extends Model
     use SoftDeletes;
 
     protected $table = 'SESION';
+
     protected $primaryKey = 'idSesion';
 
-    public $timestamps = true;
+    public $incrementing = true;
+
+    protected $keyType = 'int';
 
     protected $fillable = [
         'horaInicio',
-        'horaFin',
-    ];
+        'horaFin'
+
+    public $timestamps = true;
 
     protected $casts = [
         'horaInicio' => 'datetime:H:i:s',
