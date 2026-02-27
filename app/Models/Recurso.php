@@ -22,4 +22,9 @@ class Recurso extends Model
         'caracteristicas',
         'idTipoRecurso',
     ];
+
+    public function historiales()
+    {
+        return $this->hasMany(Historial::class, 'idRecurso', 'idRecurso');
+    }
 }

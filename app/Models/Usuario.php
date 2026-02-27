@@ -34,7 +34,17 @@ class Usuario extends Authenticatable
     }
 
     public function notificaciones()
-{
-    return $this->hasMany(Notificacion::class, 'idUsuario', 'idUsuario');
-}
+    {
+        return $this->hasMany(Notificacion::class, 'idUsuario', 'idUsuario');
+    }
+
+    public function historiales()
+    {
+        return $this->hasMany(Historial::class, 'idUsuario', 'idUsuario');
+    }
+
+    public function auditorias()
+    {
+        return $this->hasMany(Audita::class, 'idUsuario', 'idUsuario');
+    }
 }

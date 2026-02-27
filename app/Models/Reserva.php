@@ -38,4 +38,9 @@ class Reserva extends Model
     {
         return $this->belongsTo(Sesion::class, 'idSesion', 'idSesion');
     }
+
+    public function auditorias()
+    {
+        return $this->hasMany(Audita::class, 'idReserva', 'idReserva');
+    }
 }
