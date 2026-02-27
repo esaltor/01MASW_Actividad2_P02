@@ -14,29 +14,45 @@ class NotificacionController
     /**
      * Display a listing of the notification.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $query = Notificacion::with(['usuario'])->orderBy('idNotificacion');
+            $query = Notificacion::query();
 
-            // Filtro notificacion
-            if ($notificacion = request()->query('idUsuario')) {
-                $query->where('idUsuario', $notificacion);
+            // Filtro usuario
+            if ($request->filled('idUsuario')) {
+                $query->where('idUsuario', $request->idUsuario);
             }
 
-            // Obtención del número de la página y del número de elementos por página
-            $pageKey = (int) request()->query('pageKey', 1);
-            $pageSize = (int) request()->query('pageSize', 10);
+            // Filtro fecha desde
+            if ($request->filled('fecha_desde')) {
+                $query->whereDate('enviadaEn', '>=', $request->fecha_desde);
+            }
 
-            // Límites de la paginación para evitar abusos
+            // Filtro fecha hasta
+            if ($request->filled('fecha_hasta')) {
+                $query->whereDate('enviadaEn', '<=', $request->fecha_hasta);
+            }
+
+            // Ordenación antes de paginar
+            $query->orderBy('enviadaEn', 'desc');
+
+            // Paginación segura
+            $pageKey = (int) $request->query('pageKey', 1);
+            $pageSize = (int) $request->query('pageSize', 10);
+
             $pageKey = max(1, $pageKey);
             $pageSize = min(max(1, $pageSize), 100);
 
-            // Obtención del listado de roles paginado
-            $notificacions = $query->paginate($pageSize, ['*'], 'pageKey', $pageKey);
+            $notificaciones = $query->paginate(
+                $pageSize,
+                ['*'],
+                'pageKey',
+                $pageKey
+            );
 
             return response()->json(
-                ResultResponse::ok($notificacions),
+                ResultResponse::ok($notificaciones),
                 ResultResponse::SUCCESS_CODE
             );
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
