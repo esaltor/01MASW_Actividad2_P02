@@ -117,8 +117,7 @@ class CalendarioController extends Controller
         try {
             $calendario = Calendario::findOrFail($fecha);
 
-            $calendario->fecha = $request->get('nombre', $calendario->fecha);
-            $calendario->lectivo = $request->get('descripcion', $calendario->lectivo);
+            $calendario->lectivo = $request->get('lectivo', $calendario->lectivo);
 
             $calendario->save();
 
@@ -148,8 +147,7 @@ class CalendarioController extends Controller
         try {
             $calendario = Calendario::findOrFail($fecha);
 
-            $calendario->fecha = $request->get('nombre', $calendario->fecha);
-            $calendario->lectivo = $request->get('descripcion', $calendario->lectivo);
+            $calendario->lectivo = $request->get('lectivo', $calendario->lectivo);
 
             $calendario->save();
 

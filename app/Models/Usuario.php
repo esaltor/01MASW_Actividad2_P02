@@ -27,8 +27,14 @@ class Usuario extends Authenticatable
     
     protected $hidden = ['password'];
 
+    // Relaciones
     public function rol()
     {
         return $this->belongsTo(Rol::class, 'idRol', 'idRol');
     }
+
+    public function notificaciones()
+{
+    return $this->hasMany(Notificacion::class, 'idUsuario', 'idUsuario');
+}
 }
