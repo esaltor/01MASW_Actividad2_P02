@@ -68,7 +68,156 @@ class CalendarioController extends Controller
     }
 
     /**
-     * PATCH /calendario/{fecha}
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        // Validación de los campos introducidos
+        $this->validateCalendarioToggle($request);
+
+        try {
+            $newRecurso = new Calendario([
+                'fecha' => $request->get('fecha'),
+                'lectivo' => $request->get('lectivo')
+            ]);
+
+            $newRecurso->save();
+
+            return response()->json(
+                ResultResponse::ok($newRecurso),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
+        } catch (\Throwable $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
+                    $e->getMessage() // para ver el error real
+                ),
+                ResultResponse::INTERNAL_SERVER_ERROR_CODE
+            );
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Request $request, $fecha)
+    {
+        try {
+            $calendario = Calendario::findOrFail($fecha);
+
+            $calendario->fecha = $request->get('nombre', $calendario->fecha);
+            $calendario->lectivo = $request->get('descripcion', $calendario->lectivo);
+
+            $calendario->save();
+
+            return response()->json(
+                ResultResponse::ok($calendario),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch(Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, $fecha)
+    {
+        // Validación de los campos introducidos
+        $this->validateCalendarioToggle($request,(int) $fecha);
+
+        try {
+            $calendario = Calendario::findOrFail($fecha);
+
+            $calendario->fecha = $request->get('nombre', $calendario->fecha);
+            $calendario->lectivo = $request->get('descripcion', $calendario->lectivo);
+
+            $calendario->save();
+
+            return response()->json(
+                ResultResponse::ok($calendario),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch(Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                    $e->getMessage()
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($fecha)
+    {
+        try {
+            $calendario = Calendario::findOrFail($fecha);
+            $calendario->delete(); // No borra físicamente porque el modelo hace uso de SoftDeletes
+
+            return response()->json(
+                ResultResponse::ok($calendario),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch(Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($fecha)
+    {
+        try {
+            $calendario = Calendario::findOrFail($fecha);
+
+            return response()->json(
+                ResultResponse::ok($calendario),
+                ResultResponse::SUCCESS_CODE
+            );
+        } catch (Throwable $e) {
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+        }
+    }
+
+    /**
+     * PUT /calendario/{fecha}
      * Body opcional: { "lectivo": true|false }
      * Si no se envía lectivo, hace toggle.
      *

@@ -67,10 +67,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(CalendarioController::class)->prefix('calendario')->group(function () {
         Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
-        Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
-        Route::delete('/{id}', 'destroy');
+        Route::get('/{fecha}', 'show');
+        Route::post('/{fecha}', 'update');
+        Route::put('/{fecha}', 'edit');
+        Route::delete('/{fecha}', 'destroy');
     });
 
     // Rutas de Tipo de Incidencia
