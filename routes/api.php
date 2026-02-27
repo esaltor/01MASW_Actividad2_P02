@@ -16,6 +16,7 @@ use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\AuditaController;
 use App\Http\Controllers\BloqueoController;
+use App\Http\Controllers\ResumenSistemaController;
 
 // RUTAS PÚBLICAS
 // Ruta de estado de la API
@@ -188,4 +189,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{idRecurso}/{diaSemana}/{idSesion}', 'edit');
         Route::delete('/{idRecurso}/{diaSemana}/{idSesion}', 'destroy');
     });
+
+    // Rutas de resumen del sistema
+    Route::middleware('auth:sanctum')->get('/resumen-sistema', [ResumenSistemaController::class, 'resumen']);
 });
