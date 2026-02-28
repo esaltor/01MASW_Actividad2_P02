@@ -14,7 +14,7 @@ class ResumenSistemaController
 {
     public function resumen(Request $request)
     {
-        $reservasActivas = Reserva::where('estado', 'Pendiente')->count();
+        $reservasActivas = Reserva::where('estado', '!=', 'Cancelada')->count();
 
         $incidenciasAbiertas = Incidencia::where('estado', '!=', 'Cerrada')->count();
 

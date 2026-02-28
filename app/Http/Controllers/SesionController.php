@@ -65,6 +65,16 @@ class SesionController extends Controller
                 ResultResponse::ok($sesiones),
                 ResultResponse::SUCCESS_CODE
             );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+
+            return response()->json(
+                ResultResponse::fail(
+                    ResultResponse::NOT_FOUND_CODE,
+                    ResultResponse::TXT_NOT_FOUND_CODE,
+                ),
+                ResultResponse::NOT_FOUND_CODE
+            );
+
         } catch (Throwable $e) {
             return response()->json(
                 ResultResponse::fail(
