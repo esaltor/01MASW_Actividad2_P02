@@ -75,22 +75,40 @@ class HistorialController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            // Obtención del número de la página y del número de elementos por página
-            $pageKey = (int) request()->query('pageKey', 1);
-            $pageSize = (int) request()->query('pageSize', 10);
+            $query = Historial::query();
 
-            // Límites de la paginación para evitar abusos
+            // Filtro recurso
+            if ($request->filled('idRecurso')) {
+                $query->where('idRecurso', $request->idRecurso);
+            }
+
+            // Filtro fecha
+            if ($request->filled('fecha')) {
+                $query->whereDate('fecha', '>=', $request->fecha);
+            }
+
+            // Ordenacion antes de paginar
+            $query->orderBy('fecha', 'desc');
+
+            // Paginacion segura
+            $pageKey = (int) $request->query('pageKey', 1);
+            $pageSize = (int) $request->query('pageSize', 10);
+
             $pageKey = max(1, $pageKey);
             $pageSize = min(max(1, $pageSize), 100);
 
-            // Obtención del listado de roles paginado
-            $historiales = Historial::paginate($pageSize, ['*'], 'pageKey', $pageKey);
+            $notificaciones = $query->with('recurso')->paginate(
+                $pageSize,
+                ['*'],
+                'pageKey',
+                $pageKey
+            );
 
             return response()->json(
-                ResultResponse::ok($historiales),
+                ResultResponse::ok($notificaciones),
                 ResultResponse::SUCCESS_CODE
             );
         } catch (Throwable $e) { 

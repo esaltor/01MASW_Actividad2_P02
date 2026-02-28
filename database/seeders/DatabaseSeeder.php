@@ -17,6 +17,7 @@ use App\Models\Sesion;
 use App\Models\Reserva;
 use App\Models\Bloqueo;
 use App\Models\Notificacion;
+use App\Models\Historial;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -204,6 +205,16 @@ class DatabaseSeeder extends Seeder
         Notificacion::insert([
             ['asunto'=>'Reserva confirmada - Aula 101','cuerpo'=>'Tu reserva del recurso "Aula 101" ha sido confirmada para el día 2025-03-10 en la sesión 2.','canal'=>'EMAIL','enviadaEn'=>'2025-03-01 09:15:00','idUsuario'=>$mia->idUsuario],
             ['asunto'=>'Reserva rechazada - Aula Info 2','cuerpo'=>'La reserva del recurso "Aula Info 2" ha sido rechazada por Mantenimiento.','canal'=>'EMAIL','enviadaEn'=>'2025-03-02 10:30:00','idUsuario'=>$admin->idUsuario],
+        ]);
+
+        Historial::insert([
+            ['fecha' => '2025-02-10', 'horaInicio' => '09:00:00', 'horaFin' => '11:00:00', 'idUsuario' => 1, 'idRecurso' => 1],
+            ['fecha' => '2025-02-10', 'horaInicio' => '11:00:00', 'horaFin' => '13:00:00', 'idUsuario' => 1, 'idRecurso' => 5],
+            ['fecha' => '2026-02-05', 'horaInicio' => '09:00:00', 'horaFin' => '11:00:00', 'idUsuario' => 2, 'idRecurso' => 2],
+            ['fecha' => '2026-03-21', 'horaInicio' => '12:00:00', 'horaFin' => '13:00:00', 'idUsuario' => 2, 'idRecurso' => 3],
+            ['fecha' => '2026-03-10', 'horaInicio' => '13:00:00', 'horaFin' => '14:00:00', 'idUsuario' => 3, 'idRecurso' => 1],
+            ['fecha' => '2026-03-15', 'horaInicio' => '08:00:00', 'horaFin' => '09:00:00', 'idUsuario' => 2, 'idRecurso' => 4],
+            ['fecha' => '2026-03-17', 'horaInicio' => '09:00:00', 'horaFin' => '11:00:00', 'idUsuario' => 1, 'idRecurso' => 2]
         ]);
     }
 }
