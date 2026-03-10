@@ -5,6 +5,7 @@ namespace App\Http\Responses;
 class ResultResponse
 {
     const SUCCESS_CODE = 200;
+    const CREATED_CODE = 201;
     const ERROR_CODE = 400;
     const UNAUTHORIZED_CODE = 401;
     const FORBIDDEN_CODE = 403;

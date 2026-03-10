@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Usuario;
-use App\Models\Rol;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Responses\ResultResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,95 +14,6 @@ use Throwable;
 
 class UsuarioController extends Controller
 {
-    /**
-     * Validate role data sent by the client
-     */
-    function validateUser(Request $request, ?int $id = null): void
-    {
-        $rules = [
-            'nombre' => ['required', 'string', 'max:100'],
-            'apellidos' => ['required', 'string', 'max:100'],
-            'telefono' => ['nullable', 'string', 'max:15'],
-            'email' => [
-                'required',
-                'email',
-                'max:100',
-                $id === null
-                ? Rule::unique('USUARIO', 'email')->whereNull('deleted_at')
-                : Rule::unique('USUARIO', 'email')->ignore($id, 'idUsuario')->whereNull('deleted_at'),
-            ],
-            'password' => $id === null
-                ? ['required', 'string', 'min:8']
-                : ['nullable', 'string', 'min:8'],
-            'idRol' => ['required', 'integer', 'exists:ROL,idRol'],
-        ];
-    
-        $messages = [
-            'nombre.required' => 'El nombre es obligatorio.',
-            'nombre.max' => 'El nombre no puede superar 100 caracteres.',
-            'apellidos.required' => 'Los apellidos son obligatorios.',
-            'apellidos.max' => 'Los apellidos no pueden superar 100 caracteres.',
-            'telefono.max' => 'El teléfono no puede superar 15 caracteres.',
-            'email.required' => 'El email es obligatorio.',
-            'email.email' => 'El email no tiene un formato válido.',
-            'email.max' => 'El email no puede superar 100 caracteres.',
-            'email.unique' => 'Ya existe un usuario con ese email.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'idRol.required' => 'El rol es obligatorio.',
-            'idRol.integer' => 'El rol debe ser un número.',
-            'idRol.exists' => 'El rol indicado no existe.',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if ($validator->fails()) {
-            throw new HttpResponseException(
-                response()->json(
-                    ResultResponse::fail(
-                        ResultResponse::ERROR_CODE,
-                        ResultResponse::TXT_ERROR_CODE,
-                        $validator->errors()->toArray()
-                    ),
-                    ResultResponse::ERROR_CODE
-                )
-            );
-        }
-    }
-
-    /**
-     * Validate login credentials
-     */
-    function validateLogin(Request $request): void
-    {
-        $rules = [
-            'email' => ['required', 'email', 'max:100'],
-            'password' => ['required', 'string', 'min:8'],
-        ];
-    
-        $messages = [
-            'email.required' => 'El email es obligatorio.',
-            'email.email' => 'El email no tiene un formato válido.',
-            'email.max' => 'El email no puede superar 100 caracteres.',
-            'password.required' => 'La contraseña es obligatoria.',
-            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-        ];
-    
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if ($validator->fails()) {
-            throw new HttpResponseException(
-                response()->json(
-                    ResultResponse::fail(
-                        ResultResponse::ERROR_CODE,
-                        ResultResponse::TXT_ERROR_CODE,
-                        $validator->errors()->toArray()
-                    ),
-                    ResultResponse::ERROR_CODE
-                )
-            );
-        }
-    }
 
     /**
      * Display a listing of the resource.
@@ -144,26 +55,28 @@ class UsuarioController extends Controller
         $this->validateUser($request, null);
 
         try {
-            $usuario = new Usuario([
-                'nombre' => $request->get('nombre'),
-                'apellidos' => $request->get('apellidos'),
-                'telefono' => $request->get('telefono'),
-                'email' => $request->get('email'),
-                'password' => Hash::make($request->get('password')),
-                'idRol' => Rol::where('nombre', 'Usuario')->first()->idRol, // Rol fijo de usuario sin privilegios al registrarse
+            $usuario = Usuario::create([
+                'nombre' => $request->nombre,
+                'apellidos' => $request->apellidos,
+                'telefono' => $request->telefono,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => 'usuario'
             ]);
 
-            $usuario->save();
+            // Crear token personal con passport
+            $token = $usuario->createToken('centrog2 client', ['usuario:read'])->accessToken;
 
-            $token = $usuario->createToken('api')->plainTextToken;
-
+            // Responder con el token
             return response()->json(
                 ResultResponse::ok([
                     'usuario' => $usuario,
                     'token' => $token,
+                    'token_type' => 'Bearer'
                 ]),
-                ResultResponse::SUCCESS_CODE
+                ResultResponse::CREATED_CODE
             );
+
         } catch (Throwable $e) {
             return response()->json(
                 ResultResponse::fail(
@@ -180,38 +93,47 @@ class UsuarioController extends Controller
      */
     public function login(Request $request)
     {
-        $this->validateLogin($request);
-
         try {
-            $usuario = Usuario::with('rol')->where('email', $request->get('email'))->first();
+            $credentials = $request->validate([
+                'email' => ['required', 'email', 'max:100'],
+                'password' => ['required', 'string', 'min:8'],
+            ]);
 
-            if (!$usuario || !Hash::check($request->get('password'), $usuario->password)) {
+            // Verificar credenciales
+            if (!Auth::attempt($credentials)) {
                 return response()->json(
                     ResultResponse::fail(
-                        ResultResponse::UNAUTHORIZED_CODE,
-                        ResultResponse::TXT_UNAUTHORIZED_CODE
+                        ResultResponse::ERROR_CODE,
+                        'Invalid email or password.'
                     ),
-                    ResultResponse::UNAUTHORIZED_CODE
+                    ResultResponse::ERROR_CODE
                 );
             }
 
-            $token = $usuario->createToken('api')->plainTextToken;
+            // Obtener usuario autenticado
+            $usuario = Auth::user();
 
+            // Crear token personal con passport
+            if ($usuario->role === 'admin') {
+                $token = $usuario->createToken('centrog2 client', ['usuario:all'])->accessToken;
+            } else {
+                $token = $usuario->createToken('centrog2 client', ['usuario:read'])->accessToken;
+            }
+
+            // Retornar respuesta con token
             return response()->json(
                 ResultResponse::ok([
                     'usuario' => $usuario,
                     'token' => $token,
+                    'token_type' => 'Bearer'
                 ]),
                 ResultResponse::SUCCESS_CODE
             );
-        } catch (Throwable $e) {
-            return response()->json(
-                ResultResponse::fail(
-                    ResultResponse::INTERNAL_SERVER_ERROR_CODE,
-                    ResultResponse::TXT_INTERNAL_SERVER_ERROR_CODE
-                ),
-                ResultResponse::INTERNAL_SERVER_ERROR_CODE
-            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
         }
     }
 
@@ -252,8 +174,7 @@ class UsuarioController extends Controller
                  'apellidos' => $request->get('apellidos'),
                  'telefono' => $request->get('telefono'),
                  'email' => $request->get('email'),
-                 'password' => Hash::make($request->get('password')),
-                 'idRol' => $request->get('idRol'),
+                 'password' => Hash::make($request->get('password'))
              ]);
 
              $newUsuario->save();
@@ -308,7 +229,6 @@ class UsuarioController extends Controller
             $usuario->apellidos = $request->get('apellidos', $usuario->apellidos);
             $usuario->telefono = $request->get('telefono', $usuario->telefono);
             $usuario->email = $request->get('email', $usuario->email);
-            $usuario->idRol = $request->get('idRol', $usuario->idRol);
 
             if ($request->filled('password')) {
                 $usuario->password = Hash::make($request->get('password'));
@@ -346,7 +266,6 @@ class UsuarioController extends Controller
             $usuario->apellidos = $request->get('apellidos', $usuario->apellidos);
             $usuario->telefono = $request->get('telefono', $usuario->telefono);
             $usuario->email = $request->get('email', $usuario->email);
-            $usuario->idRol = $request->get('idRol', $usuario->idRol);
 
             if ($request->filled('password')) {
                 $usuario->password = Hash::make($request->get('password'));
@@ -389,6 +308,58 @@ class UsuarioController extends Controller
                     ResultResponse::TXT_NOT_FOUND_CODE,
                 ),
                 ResultResponse::NOT_FOUND_CODE
+            );
+        }
+    }
+
+    /**
+     * Validate role data sent by the client
+     */
+    function validateUser(Request $request, ?int $id = null): void
+    {
+        $rules = [
+            'nombre' => ['required', 'string', 'max:100'],
+            'apellidos' => ['required', 'string', 'max:100'],
+            'telefono' => ['nullable', 'string', 'max:15'],
+            'email' => [
+                'required',
+                'email',
+                'max:100',
+                $id === null
+                ? Rule::unique('USUARIO', 'email')->whereNull('deleted_at')
+                : Rule::unique('USUARIO', 'email')->ignore($id, 'idUsuario')->whereNull('deleted_at'),
+            ],
+            'password' => $id === null
+                ? ['required', 'string', 'min:8']
+                : ['nullable', 'string', 'min:8']
+        ];
+    
+        $messages = [
+            'nombre.required' => 'El nombre es obligatorio.',
+            'nombre.max' => 'El nombre no puede superar 100 caracteres.',
+            'apellidos.required' => 'Los apellidos son obligatorios.',
+            'apellidos.max' => 'Los apellidos no pueden superar 100 caracteres.',
+            'telefono.max' => 'El teléfono no puede superar 15 caracteres.',
+            'email.required' => 'El email es obligatorio.',
+            'email.email' => 'El email no tiene un formato válido.',
+            'email.max' => 'El email no puede superar 100 caracteres.',
+            'email.unique' => 'Ya existe un usuario con ese email.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            throw new HttpResponseException(
+                response()->json(
+                    ResultResponse::fail(
+                        ResultResponse::ERROR_CODE,
+                        ResultResponse::TXT_ERROR_CODE,
+                        $validator->errors()->toArray()
+                    ),
+                    422
+                )
             );
         }
     }

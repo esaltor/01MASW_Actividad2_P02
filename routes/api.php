@@ -17,6 +17,7 @@ use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\AuditaController;
 use App\Http\Controllers\BloqueoController;
 use App\Http\Controllers\ResumenSistemaController;
+use Laravel\Passport\Http\Middleware\CheckTokenForAnyScope;
 
 // RUTAS PÚBLICAS
 // Ruta de estado de la API
@@ -32,13 +33,108 @@ Route::controller(UsuarioController::class)->prefix('usuario')->group(function (
     Route::post('/login', 'login');
 });
 
-// RUTAS PROTEGIDAS (solo accesibles después de iniciar sesión)
-Route::middleware('auth:sanctum')->group(function () {
+// RUTAS PROTEGIDAS (solo accesibles despues de autenticarse)
+Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:read', 'usuario:all')])->group(function () {
     // Rutas de Rol
     Route::controller(RolController::class)->prefix('roles')->group(function () {
         Route::get('/', 'index');
-        Route::post('/', 'store');
         Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Tipo de Recurso
+    Route::controller(TipoRecursoController::class)->prefix('tipo-recurso')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Sesion
+    Route::controller(SesionController::class)->prefix('sesion')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Calendario
+    Route::controller(CalendarioController::class)->prefix('calendario')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{fecha}', 'show');
+    });
+
+    // Rutas de Tipo de Incidencia
+    Route::controller(TipoIncidenciaController::class)->prefix('tipo-incidencia')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Adjunto
+    Route::controller(AdjuntoController::class)->prefix('adjunto')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Usuario
+    Route::controller(UsuarioController::class)->prefix('usuario')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Recurso
+    Route::controller(RecursoController::class)->prefix('recurso')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Elemento
+    Route::controller(ElementoController::class)->prefix('elemento')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Reserva
+    Route::controller(ReservaController::class)->prefix('reserva')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Historial
+    Route::controller(HistorialController::class)->prefix('historial')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Notificacion
+    Route::controller(NotificacionController::class)->prefix('notificacion')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Incidencia
+    Route::controller(IncidenciaController::class)->prefix('incidencia')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Audita
+    Route::controller(AuditaController::class)->prefix('audita')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+    });
+
+    // Rutas de Bloqueo
+    Route::controller(BloqueoController::class)->prefix('bloqueo')->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{idRecurso}/{diaSemana}/{idSesion}', 'show');
+    });
+
+    // Rutas de resumen del sistema
+    Route::controller(ResumenSistemaController::class)->prefix('/resumen-sistema')->group(function () {
+        Route::get('/', 'resumen');
+    });
+});
+
+Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->group(function () {
+    // Rutas de Rol
+    Route::controller(RolController::class)->prefix('roles')->group(function () {
+        Route::post('/', 'store');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -46,9 +142,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Tipo de Recurso
     Route::controller(TipoRecursoController::class)->prefix('tipo-recurso')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -56,9 +150,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Sesion
     Route::controller(SesionController::class)->prefix('sesion')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -66,9 +158,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Calendario
     Route::controller(CalendarioController::class)->prefix('calendario')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{fecha}', 'show');
         Route::post('/{fecha}', 'update');
         Route::put('/{fecha}', 'edit');
         Route::delete('/{fecha}', 'destroy');
@@ -76,9 +166,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Tipo de Incidencia
     Route::controller(TipoIncidenciaController::class)->prefix('tipo-incidencia')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -86,8 +174,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Adjunto
     Route::controller(AdjuntoController::class)->prefix('adjunto')->group(function () {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -102,9 +188,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Rutas de Usuario
     Route::controller(UsuarioController::class)->prefix('usuario')->group(function () {
         Route::post('/logout', 'logout');
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -112,9 +196,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Recurso
     Route::controller(RecursoController::class)->prefix('recurso')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -122,9 +204,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Elemento
     Route::controller(ElementoController::class)->prefix('elemento')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -132,9 +212,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Reserva
     Route::controller(ReservaController::class)->prefix('reserva')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -142,9 +220,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Historial
     Route::controller(HistorialController::class)->prefix('historial')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -152,9 +228,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Notificacion
     Route::controller(NotificacionController::class)->prefix('notificacion')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -162,9 +236,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Incidencia
     Route::controller(IncidenciaController::class)->prefix('incidencia')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
@@ -172,24 +244,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rutas de Audita
     Route::controller(AuditaController::class)->prefix('audita')->group(function () {
-        Route::get('/', 'index');
         Route::post('/', 'store');
-        Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::put('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
     // Rutas de Bloqueo
-    Route::controller(BloqueoController::class)->prefix('bloqueo')->group(function () {
-        Route::get('/', 'index');   
+    Route::controller(BloqueoController::class)->prefix('bloqueo')->group(function () { 
         Route::post('/', 'store');
-        Route::get('/{idRecurso}/{diaSemana}/{idSesion}', 'show');
         Route::post('/{idRecurso}/{diaSemana}/{idSesion}', 'update');
         Route::put('/{idRecurso}/{diaSemana}/{idSesion}', 'edit');
         Route::delete('/{idRecurso}/{diaSemana}/{idSesion}', 'destroy');
     });
-
-    // Rutas de resumen del sistema
-    Route::middleware('auth:sanctum')->get('/resumen-sistema', [ResumenSistemaController::class, 'resumen']);
 });

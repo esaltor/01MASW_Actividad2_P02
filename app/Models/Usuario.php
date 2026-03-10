@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Usuario extends Authenticatable
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\Contracts\OAuthenticatable;
+use Laravel\Passport\HasApiTokens;
+ 
+class Usuario extends Authenticatable implements OAuthenticatable
 {
-    use HasApiTokens, SoftDeletes;
+    use SoftDeletes, HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'USUARIO';
     protected $primaryKey = 'idUsuario';
@@ -22,17 +25,12 @@ class Usuario extends Authenticatable
         'telefono',
         'email',
         'password',
-        'idRol',
+        'role'
     ];
     
     protected $hidden = ['password'];
 
     // Relaciones
-    public function rol()
-    {
-        return $this->belongsTo(Rol::class, 'idRol', 'idRol');
-    }
-
     public function notificaciones()
     {
         return $this->hasMany(Notificacion::class, 'idUsuario', 'idUsuario');

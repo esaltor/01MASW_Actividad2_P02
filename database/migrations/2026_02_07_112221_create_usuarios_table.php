@@ -18,16 +18,10 @@ return new class extends Migration
             $table->string('telefono', 15)->nullable();
             $table->string('email', 100)->unique();
             $table->string('password', 255);
+            $table->enum('role', ['admin', 'mia', 'usuario']);
 
             $table->timestamp('fechaAlta')->useCurrent();
             $table->timestamp('fechaBaja')->nullable();
-
-            $table->unsignedBigInteger('idRol');
-
-            $table->foreign('idRol')
-                ->references('idRol')->on('ROL')
-                ->onDelete('restrict')
-                ->onUpdate('cascade');
 
             $table->timestamps();
             $table->softDeletes();
