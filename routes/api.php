@@ -136,7 +136,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(RolController::class)->prefix('roles')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -144,7 +144,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(TipoRecursoController::class)->prefix('tipo-recurso')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -152,7 +152,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(SesionController::class)->prefix('sesion')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -160,7 +160,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(CalendarioController::class)->prefix('calendario')->group(function () {
         Route::post('/', 'store');
         Route::post('/{fecha}', 'update');
-        Route::put('/{fecha}', 'edit');
+        Route::patch('/{fecha}', 'edit');
         Route::delete('/{fecha}', 'destroy');
     });
 
@@ -168,14 +168,14 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(TipoIncidenciaController::class)->prefix('tipo-incidencia')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
     // Rutas de Adjunto
     Route::controller(AdjuntoController::class)->prefix('adjunto')->group(function () {
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -190,7 +190,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
         Route::post('/logout', 'logout');
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -198,7 +198,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(RecursoController::class)->prefix('recurso')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -206,7 +206,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(ElementoController::class)->prefix('elemento')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -214,7 +214,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(ReservaController::class)->prefix('reserva')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -222,7 +222,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(HistorialController::class)->prefix('historial')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -230,7 +230,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(NotificacionController::class)->prefix('notificacion')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -238,7 +238,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(IncidenciaController::class)->prefix('incidencia')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -246,7 +246,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(AuditaController::class)->prefix('audita')->group(function () {
         Route::post('/', 'store');
         Route::post('/{id}', 'update');
-        Route::put('/{id}', 'edit');
+        Route::patch('/{id}', 'edit');
         Route::delete('/{id}', 'destroy');
     });
 
@@ -254,7 +254,7 @@ Route::middleware(['auth:api', CheckTokenForAnyScope::using('usuario:all')])->gr
     Route::controller(BloqueoController::class)->prefix('bloqueo')->group(function () { 
         Route::post('/', 'store');
         Route::post('/{idRecurso}/{diaSemana}/{idSesion}', 'update');
-        Route::put('/{idRecurso}/{diaSemana}/{idSesion}', 'edit');
+        Route::patch('/{idRecurso}/{diaSemana}/{idSesion}', 'edit');
         Route::delete('/{idRecurso}/{diaSemana}/{idSesion}', 'destroy');
     });
 });
