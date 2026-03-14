@@ -90,6 +90,12 @@ DB_PASSWORD=password
 
 Si no está configurada con estos valores, modifícalos por estos.
 
+Generar la clave de cifrado de la aplicación:
+
+```bash
+php artisan key:generate
+```
+
 ## 3️⃣ Instalar dependencias dentro de Docker
 
 Esto generará la carpeta `vendor/` y `vendor/bin/sail`.
@@ -145,6 +151,28 @@ Para eliminar todas las tablas, vistas y tipos de la base de datos actual defini
 ```bash
 ./vendor/bin/sail artisan db:wipe
 ```
+
+## Crear cliente personal de Passport
+
+Si no se tiene Laravel Passport instalado:
+
+```bash
+./vendor/bin/sail composer require laravel/passport
+```
+
+Una vez instalado, genera las claves de cifrado OAuth requeridas por Laravel Passport:
+
+```bash
+./vendor/bin/sail artisan passport:keys
+```
+
+Y crea un Personal Access Client para Laravel Passport:
+
+```bash
+./vendor/bin/sail artisan passport:client --personal
+```
+
+Este comando crea un cliente de acceso personal que se utiliza para generar tokens de acceso personal para la autenticación de la API.
 
 ## Población inicial de roles con Seeder
 
